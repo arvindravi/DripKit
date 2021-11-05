@@ -61,7 +61,6 @@ public class DripKit: NSObject, DripKitType {
             throw Error.invalidResponse
         }
         
-        
         guard let result = try? decoder.decode(WinterOutfitsRawResponse.self, from: data) else {
             throw Error.failedToDecodeData
         }

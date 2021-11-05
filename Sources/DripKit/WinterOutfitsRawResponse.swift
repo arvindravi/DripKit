@@ -60,6 +60,4 @@ extension DripKit {
         case inStock = "in_stock"
         case outOfStock = "out_of_stock"
     }
-
-
 }
