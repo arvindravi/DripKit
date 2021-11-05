@@ -10,8 +10,8 @@ import Foundation
 extension DripKit {
     // MARK: - WinterOutfitsRawResponse
     public struct WinterOutfitsRawResponse: Codable {
-        let userID: Int
-        let outfits: [Outfit]
+        public let userID: Int
+        public let outfits: [Outfit]
 
         enum CodingKeys: String, CodingKey {
             case userID = "user_id"
@@ -21,10 +21,10 @@ extension DripKit {
 
     // MARK: - Outfit
     public struct Outfit: Codable {
-        let when, outfitDescription: String
-        let inspiredByPhotoURL: String
-        let occasion: String
-        let items: [Item]
+        public let when, outfitDescription: String
+        public let inspiredByPhotoURL: String
+        public let occasion: String
+        public let items: [Item]
 
         enum CodingKeys: String, CodingKey {
             case when
@@ -36,13 +36,13 @@ extension DripKit {
 
     // MARK: - Item
     public struct Item: Codable {
-        let name, brand: String
-        let stockLevel: StockLevel
-        let imageURL: String
-        let url, priceGbp: String
-        let priceGbpSince: Int
-        let pricePreviousGbp: String
-        let pricePreviousGbpSince: Int
+        public let name, brand: String
+        public let stockLevel: StockLevel
+        public let imageURL: String
+        public let url, priceGbp: String
+        public let priceGbpSince: Int
+        public let pricePreviousGbp: String
+        public let pricePreviousGbpSince: Int
 
         enum CodingKeys: String, CodingKey {
             case name, brand
