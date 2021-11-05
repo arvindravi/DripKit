@@ -82,5 +82,5 @@ extension ImageLoader: ImageLoaderType {
         let image = try await task.value
         images[urlRequest] = .fetched(image)
         return image
-    }s
+    }
 }
