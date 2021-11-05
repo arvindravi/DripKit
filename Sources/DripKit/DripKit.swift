@@ -1,7 +1,7 @@
 import Foundation
 
 public protocol DripKitType: AnyObject {
-    func fetchWinterOutfits(_ page: Int, result: @escaping DripKit.WinterOutfitsResult)
+    func fetchWinterOutfits(_ page: Int) async throws -> DripKit.WinterOutfitsRawResponse
 }
 
 public class DripKit: NSObject, DripKitType {
@@ -18,8 +18,6 @@ public class DripKit: NSObject, DripKitType {
     private let decoder: JSONDecoder = .init()
     
     // MARK: - Custom Types -
-    
-    public typealias WinterOutfitsResult = (Result<WinterOutfitsRawResponse, Error>) -> Void
     
     public enum Error: LocalizedError {
         case invalidResponse
@@ -55,37 +53,20 @@ public class DripKit: NSObject, DripKitType {
     
     // MARK: - Public -
     
-    public func fetchWinterOutfits(_ page: Int = 1, result: @escaping WinterOutfitsResult) {
-        session.dataTask(with: Endpoint.winterOutfits(page: page).url) { data, response, error in
-            guard let data = data else {
-                self.finish { result(.failure(.invalidResponse)) }
-                return
-            }
-
-            self.handleData(data: data, result: result)
-        }.resume()
-    }
+    public func fetchWinterOutfits(_ page: Int = 1) async throws -> WinterOutfitsRawResponse {
+        let urlRequest = URLRequest(url: Endpoint.winterOutfits(page: page).url)
+        let (data, response) = try await session.data(for: urlRequest)
         
-    // MARK: - Private -
-    
-    private func handleData(data: Data?, result: @escaping WinterOutfitsResult) {
-        guard let data = data else {
-            finish { result(.failure(.failedToDecodeData)) }
-            return
+        guard (response as? HTTPURLResponse)?.statusCode == 200 else {
+            throw Error.invalidResponse
         }
         
-        guard let decoded = try? decoder.decode(WinterOutfitsRawResponse.self, from: data) else {
-            finish { result(.failure(.failedToDecodeData)) }
-            return
+        
+        guard let result = try? decoder.decode(WinterOutfitsRawResponse.self, from: data) else {
+            throw Error.failedToDecodeData
         }
         
-        finish { result(.success(decoded)) }
-    }
-    
-    private func finish(callback: @escaping () -> ()) {
-        DispatchQueue.main.async {
-            callback()
-        }
+        return result
     }
 }
 
